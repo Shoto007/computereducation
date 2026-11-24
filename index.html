@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe: บทเรียนที่ 1 มารู้จักคอมพิวเตอร์กันเถอะ</title>
+    <!-- นำเข้า Tailwind CSS สำหรับจัด Layout และ Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- นำเข้าฟอนต์ภาษาไทย Sarabun และ Prompt เพื่อให้อ่านง่ายและสบายตา -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        // ตั้งค่าสีและฟอนต์ให้ตรงกับภาพโครงร่าง Wireframe
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'sans-serif'],
+                        heading: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        slateWire: {
+                            dark: '#4a6075',
+                            main: '#5c768d',
+                            light: '#748da3',
+                            bg: '#f4f6f8',
+                            card: '#e9eef2',
+                            border: '#cbd5e1'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-200 text-slate-800 antialiased min-h-screen py-4 px-2 sm:px-6">
+
+    <!-- กล่องแจ้งเตือนแบบนุ่มนวล (แทนการใช้ alert()) -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 z-50 hidden transform transition-all duration-300 translate-y-2 opacity-0">
+        <div class="bg-slateWire-dark text-white px-4 py-3 rounded-lg shadow-lg border border-slate-400 flex items-center gap-3 text-sm">
+            <span id="toast-icon">ℹ️</span>
+            <span id="toast-message">ข้อความแจ้งเตือน</span>
+        </div>
+    </div>
+
+    <!-- กรอบหน้าเว็บหลัก (Main Wireframe Container) -->
+    <div class="max-w-5xl mx-auto bg-white rounded-xl border-2 border-slate-400 shadow-sm overflow-hidden">
+
+        <!-- 1. ส่วนหัวและเมนูนำทาง (Top Header) -->
+        <header class="bg-slateWire-main text-white px-4 sm:px-6 py-3 border-b-2 border-slate-400">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                
+                <!-- โลโก้ และ ช่องค้นหา -->
+                <div class="flex items-center gap-3 flex-1 min-w-[240px]">
+                    <a href="#" onclick="showToast('กลับสู่หน้าหลักของบทเรียน'); return false;" class="font-heading font-bold text-lg tracking-wide border border-white/50 px-2.5 py-1 rounded-md bg-slateWire-dark/40 hover:bg-slateWire-dark transition">
+                        [Logo]
+                    </a>
+                    <!-- ช่องค้นหา -->
+                    <form onsubmit="handleSearch(event)" class="flex items-center bg-white rounded-md overflow-hidden border border-slate-300 flex-1 max-w-xs">
+                        <input type="text" id="search-input" placeholder="ค้นหา (Search)" class="w-full px-3 py-1.5 text-sm text-slate-700 focus:outline-none">
+                        <button type="submit" aria-label="ค้นหา" class="px-2.5 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 border-l border-slate-300 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- เมนูนำทาง (Navigation Links) -->
+                <nav class="flex flex-wrap items-center gap-2 sm:gap-5 text-sm font-medium">
+                    <a href="#" onclick="showToast('เปิดเมนู: หน้าแรก'); return false;" class="hover:underline px-1.5 py-1 rounded">หน้าแรก</a>
+                    <a href="#" onclick="showToast('กำลังดู: บทเรียน'); return false;" class="underline underline-offset-4 font-semibold px-1.5 py-1 rounded">บทเรียน</a>
+                    <a href="#" onclick="showToast('เปิดเมนู: เกมฝึกสมอง'); return false;" class="hover:underline px-1.5 py-1 rounded">เกมฝึกสมอง</a>
+                    <a href="#" onclick="showToast('คุณมี 12 ดาวสะสม ⭐'); return false;" class="hover:underline px-1.5 py-1 rounded flex items-center gap-1">
+                        <span>สะสมดาว</span>
+                    </a>
+                    <button onclick="toggleLoginModal()" id="login-btn" class="border border-white/70 bg-slateWire-dark/50 hover:bg-slateWire-dark px-3 py-1.5 rounded-md text-xs sm:text-sm transition">
+                        [เข้าสู่ระบบ]
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- 2. ส่วนแนะนำบทเรียน (Hero Section) -->
+        <section class="bg-slateWire-light text-white px-6 py-8 border-b-2 border-slate-400">
+            <div class="max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+                
+                <!-- ไอคอนหุ่นยนต์ลายเส้นเรียบๆ (Minimalist Robot Outline SVG) -->
+                <div class="flex-shrink-0 w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center border-2 border-dashed border-white/60 rounded-2xl bg-slateWire-main/30 p-3">
+                    <svg class="w-full h-full text-white" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- เสาอากาศ -->
+                        <line x1="32" y1="8" x2="32" y2="16"></line>
+                        <circle cx="32" cy="6" r="2.5"></circle>
+                        <!-- หัวหุ่นยนต์ -->
+                        <rect x="16" y="16" width="32" height="24" rx="5"></rect>
+                        <!-- หูซ้าย-ขวา -->
+                        <rect x="11" y="23" width="5" height="10" rx="2"></rect>
+                        <rect x="48" y="23" width="5" height="10" rx="2"></rect>
+                        <!-- ดวงตา -->
+                        <circle cx="25" cy="26" r="3"></circle>
+                        <circle cx="39" cy="26" r="3"></circle>
+                        <!-- ปาก -->
+                        <line x1="25" y1="34" x2="39" y2="34"></line>
+                        <!-- ลำตัวส่วนบน -->
+                        <path d="M20 40v12a4 4 0 004 4h16a4 4 0 004-4V40"></path>
+                        <rect x="26" y="45" width="12" height="6" rx="1"></rect>
+                    </svg>
+                </div>
+
+                <!-- รายละเอียดบทเรียน -->
+                <div class="flex-1 space-y-3">
+                    <h1 class="font-heading text-2xl sm:text-3xl font-bold tracking-tight">
+                        บทเรียนที่ 1: มารู้จักกับคอมพิวเตอร์กันเถอะ!
+                    </h1>
+                    <p class="text-slate-100 text-sm sm:text-base">
+                        เรียนรู้พื้นฐานและทำความเข้าใจเป้าหมายของบทเรียน
+                    </p>
+                    <div class="pt-1 flex flex-wrap items-center justify-center sm:justify-start gap-4">
+                        <button onclick="scrollToLesson()" class="bg-white text-slateWire-dark font-heading font-semibold px-5 py-2 rounded-full border border-slate-300 shadow-sm hover:bg-slate-100 active:scale-95 transition text-sm">
+                            เริ่มเรียนเลย
+                        </button>
+                        <div class="flex items-center gap-4 text-xs sm:text-sm text-slate-100">
+                            <span class="flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                ระยะเวลา: 15 นาที
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                ระดับ: เริ่มต้น
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. ส่วนเนื้อหาหลัก และ แถบสารบัญด้านข้าง (Main Content & Sidebar: 2-Column Layout) -->
+        <main id="lesson-area" class="p-5 sm:p-8 bg-slateWire-bg/40 border-b border-slate-300">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- คอลัมน์ซ้าย: เนื้อหาหลัก (70% -> 8 จาก 12 คอลัมน์) -->
+                <div class="lg:col-span-8 space-y-6">
+                    
+                    <!-- กล่องวิดีโอประกอบการสอน (Interactive Video Placeholder) -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-xs text-slate-500">
+                            <span>[วิดีโอประกอบการสอน]</span>
+                            <span id="video-status-text">สถานะ: พร้อมเล่น</span>
+                        </div>
+                        <div onclick="toggleVideoPlay()" class="relative w-full aspect-video bg-slate-200 rounded-xl border-2 border-slate-400 flex flex-col items-center justify-center cursor-pointer group hover:bg-slate-300/70 transition select-none overflow-hidden">
+                            <!-- ปุ่ม Play / Pause ตรงกลาง -->
+                            <div id="video-play-circle" class="w-16 h-16 rounded-full border-2 border-slateWire-dark bg-white/80 flex items-center justify-center text-slateWire-dark group-hover:scale-105 transition shadow-sm">
+                                <svg id="icon-play" class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <svg id="icon-pause" class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                                </svg>
+                            </div>
+                            <p id="video-caption" class="mt-3 text-sm font-medium text-slate-600">คลิกเพื่อเล่นวิดีโอ: แนะนำส่วนประกอบของคอมพิวเตอร์</p>
+                            
+                            <!-- แถบจำลองความคืบหน้าวิดีโอ -->
+                            <div class="absolute bottom-0 left-0 right-0 h-2 bg-slate-300">
+                                <div id="video-progress-bar" class="h-full bg-slateWire-main w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ส่วนเนื้อหาบทเรียนและภาพประกอบ -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-300 space-y-4">
+                        <h2 id="content-title" class="font-heading text-xl font-bold text-slate-800">
+                            คอมพิวเตอร์คืออะไร? มาเล่นเกมส์กัน!
+                        </h2>
+                        
+                        <div class="flex flex-col sm:flex-row gap-5 items-start">
+                            <!-- คำอธิบายภาษาไทยเข้าใจง่ายสำหรับเด็กประถม -->
+                            <div id="content-body" class="flex-1 space-y-3 text-sm sm:text-base text-slate-700 leading-relaxed">
+                                <p>
+                                    <strong>คอมพิวเตอร์</strong> คืออุปกรณ์อิเล็กทรอนิกส์แสนฉลาดที่ช่วยเราทำงานต่างๆ ได้รวดเร็ว เช่น พิมพ์รายงาน วาดรูป ฟังเพลง และค้นหาความรู้สนุกๆ
+                                </p>
+                                <ul class="list-disc list-inside space-y-1.5 text-slate-700 bg-slateWire-bg p-3.5 rounded-lg border border-slate-200">
+                                    <li><strong>หน้าจอ (Monitor):</strong> ใช้แสดงภาพและข้อความให้เรามองเห็น</li>
+                                    <li><strong>เมาส์ (Mouse):</strong> ใช้ชี้และคลิกเลือกสิ่งต่างๆ บนหน้าจอ</li>
+                                    <li><strong>คีย์บอร์ด (Keyboard):</strong> ใช้พิมพ์ตัวอักษรและตัวเลข</li>
+                                </ul>
+                            </div>
+
+                            <!-- กล่องโครงร่างรูปภาพ/แผนภาพ -->
+                            <div class="w-full sm:w-44 h-36 bg-slate-200 rounded-lg border-2 border-dashed border-slate-400 flex flex-col items-center justify-center p-3 text-center flex-shrink-0">
+                                <svg class="w-8 h-8 text-slate-500 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span id="diagram-label" class="text-xs font-medium text-slate-600">[รูปภาพ/แผนภาพ]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- คอลัมน์ขวา: แถบสารบัญบทเรียน (30% -> 4 จาก 12 คอลัมน์) -->
+                <aside class="lg:col-span-4 space-y-4">
+                    <div class="bg-slateWire-card p-4 rounded-xl border border-slate-300">
+                        <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-300">
+                            <h3 class="font-heading font-bold text-base text-slate-800">แผนที่บทเรียน</h3>
+                            <span class="text-xs text-slate-500">[Sidebar]</span>
+                        </div>
+                        
+                        <!-- รายการบทเรียนแบบคลิกเปลี่ยนสถานะได้ -->
+                        <ul id="lesson-map-list" class="space-y-2 text-sm">
+                            <li>
+                                <button onclick="selectLesson(0)" data-index="0" class="lesson-item w-full text-left px-3 py-2.5 rounded-lg border border-transparent hover:bg-white/70 transition flex items-center gap-2.5 text-slate-700">
+                                    <span class="status-mark font-mono font-bold text-slateWire-dark">[✓]</span>
+                                    <span>1. คอมพิวเตอร์คืออะไร</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button onclick="selectLesson(1)" data-index="1" class="lesson-item w-full text-left px-3 py-2.5 rounded-lg border border-slate-400 bg-white font-semibold shadow-xs transition flex items-center gap-2.5 text-slate-900">
+                                    <span class="status-mark font-mono font-bold text-slateWire-main">[●]</span>
+                                    <span>2. เมาส์และคีย์บอร์ด</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button onclick="selectLesson(2)" data-index="2" class="lesson-item w-full text-left px-3 py-2.5 rounded-lg border border-transparent hover:bg-white/70 transition flex items-center gap-2.5 text-slate-600">
+                                    <span class="status-mark font-mono font-bold text-slate-400">[ ]</span>
+                                    <span>3. เกมฝึกสมอง</span>
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- แถบความคืบหน้าการเรียน -->
+                        <div class="mt-4 pt-3 border-t border-slate-300">
+                            <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                <span>ความคืบหน้า</span>
+                                <span id="progress-percent">33%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-300 rounded-full overflow-hidden">
+                                <div id="lesson-progress-bar" class="h-full bg-slateWire-main transition-all duration-300" style="width: 33%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+
+        <!-- 4. ส่วนแบบทดสอบสั้นๆ มุมถาม-ตอบ และปุ่มเปลี่ยนหน้า (Engagement & Navigation) -->
+        <section class="p-5 sm:p-8 bg-white space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- ฝั่งซ้าย: แบบทดสอบสนุกๆ (Interactive Mini Quiz) -->
+                <div class="bg-slateWire-bg p-4 sm:p-5 rounded-xl border border-slate-300 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                        <h3 class="font-heading font-bold text-base text-slate-800">แบบทดสอบสนุกๆ</h3>
+                        <span class="text-xs text-slate-500">เลือกคำตอบที่ถูกต้อง</span>
+                    </div>
+
+                    <!-- ข้อที่ 1 -->
+                    <div class="space-y-2 text-sm">
+                        <p class="font-medium text-slate-800">1. อุปกรณ์ใดใช้สำหรับ "ชี้และคลิก" บนหน้าจอ?</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="checkAnswer(1, true, this)" class="quiz-btn-1 px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-left transition">
+                                ก. เมาส์ (Mouse)
+                            </button>
+                            <button onclick="checkAnswer(1, false, this)" class="quiz-btn-1 px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-left transition">
+                                ข. ลำโพง (Speaker)
+                            </button>
+                        </div>
+                        <p id="quiz-feedback-1" class="text-xs font-medium hidden"></p>
+                    </div>
+
+                    <!-- ข้อที่ 2 -->
+                    <div class="space-y-2 text-sm pt-2 border-t border-slate-200">
+                        <p class="font-medium text-slate-800">2. หากต้องการพิมพ์ชื่อตัวเอง ต้องใช้อุปกรณ์ใด?</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="checkAnswer(2, false, this)" class="quiz-btn-2 px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-left transition">
+                                ก. หน้าจอ (Monitor)
+                            </button>
+                            <button onclick="checkAnswer(2, true, this)" class="quiz-btn-2 px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-left transition">
+                                ข. คีย์บอร์ด (Keyboard)
+                            </button>
+                        </div>
+                        <p id="quiz-feedback-2" class="text-xs font-medium hidden"></p>
+                    </div>
+                </div>
+
+                <!-- ฝั่งขวา: มุมถาม-ตอบ (Interactive Q&A Box) -->
+                <div class="bg-slateWire-bg p-4 sm:p-5 rounded-xl border border-slate-300 flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-slate-300 pb-2 mb-3">
+                            <h3 class="font-heading font-bold text-base text-slate-800">มุมถาม-ตอบ</h3>
+                            <span class="text-xs text-slate-500">Q&A / ความคิดเห็น</span>
+                        </div>
+                        
+                        <!-- รายการคำถาม/ความคิดเห็น -->
+                        <div id="qa-list" class="space-y-2 max-h-32 overflow-y-auto pr-1 text-xs sm:text-sm">
+                            <div class="bg-white p-2.5 rounded-lg border border-slate-200 text-slate-700">
+                                <span class="font-semibold text-slateWire-dark">น้องต้นกล้า ป.2:</span> เมาส์ไร้สายใช้งานยังไงครับคุณครู?
+                            </div>
+                            <div class="bg-slate-200/70 p-2.5 rounded-lg border border-slate-300 text-slate-700">
+                                <span class="font-semibold text-slate-800">คุณครูใจดี:</span> ใช้สัญญาณบลูทูธหรือตัวรับสัญญาณ USB จ้ะ ไม่ต้องมีสายเกะกะเลย!
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ฟอร์มส่งข้อความ -->
+                    <form onsubmit="addComment(event)" class="flex gap-2 pt-2">
+                        <input type="text" id="qa-input" placeholder="พิมพ์คำถามถึงคุณครูที่นี่..." class="flex-1 px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-slateWire-main">
+                        <button type="submit" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-medium text-sm rounded-lg border border-slate-400 transition whitespace-nowrap">
+                            ส่งข้อความ
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- แถวปุ่มเปลี่ยนบทเรียนด้านล่าง (Bottom Navigation Row) -->
+            <div class="pt-4 border-t border-slate-200 flex items-center justify-between gap-4">
+                <button onclick="navigateLesson(-1)" class="px-5 py-2.5 rounded-lg bg-slateWire-light hover:bg-slateWire-main text-white font-heading font-medium text-sm border border-slate-400 transition flex items-center gap-2">
+                    <span>&lt; ย้อนกลับ</span>
+                </button>
+                <span id="bottom-step-indicator" class="text-xs sm:text-sm text-slate-500 font-medium">
+                    หัวข้อที่ 2 จาก 3
+                </span>
+                <button onclick="navigateLesson(1)" class="px-5 py-2.5 rounded-lg bg-slateWire-main hover:bg-slateWire-dark text-white font-heading font-medium text-sm border border-slate-400 transition flex items-center gap-2">
+                    <span>ไปต่อเลย! &gt;</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 5. ส่วนท้ายเว็บ (Footer) -->
+        <footer class="bg-slateWire-card px-6 py-5 border-t-2 border-slate-400 text-slate-700">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm">
+                <div>
+                    <a href="#" onclick="showToast('เปิดหน้า: เกี่ยวกับเรา'); return false;" class="font-bold block hover:underline">เกี่ยวกับเรา</a>
+                    <span class="text-slate-500 text-xs">About Us</span>
+                </div>
+                <div>
+                    <a href="#" onclick="showToast('เปิดหน้า: ติดต่อคุณครู'); return false;" class="font-bold block hover:underline">ติดต่อคุณครู</a>
+                    <span class="text-slate-500 text-xs">Contact</span>
+                </div>
+                <div>
+                    <a href="#" onclick="showToast('เปิดหน้า: นโยบายความเป็นส่วนตัว'); return false;" class="font-bold block hover:underline">นโยบายความเป็นส่วนตัว</a>
+                    <span class="text-slate-500 text-xs">Privacy Policy</span>
+                </div>
+                <div>
+                    <span class="font-bold block mb-1.5">สำหรับผู้ปกครอง</span>
+                    <!-- ไอคอนโซเชียลแบบเรียบง่าย -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="showToast('ลิงก์ชุมชนผู้ปกครอง (Facebook)');" aria-label="Facebook" class="w-7 h-7 rounded-full bg-slate-700 text-white flex items-center justify-center text-xs font-bold hover:bg-slate-900 transition">f</button>
+                        <button onclick="showToast('ลิงก์ข่าวสาร (Twitter/X)');" aria-label="Twitter" class="w-7 h-7 rounded-full bg-slate-700 text-white flex items-center justify-center text-xs font-bold hover:bg-slate-900 transition">t</button>
+                        <button onclick="showToast('ลิงก์บอร์ดไอเดีย (Pinterest)');" aria-label="Pinterest" class="w-7 h-7 rounded-full bg-slate-700 text-white flex items-center justify-center text-xs font-bold hover:bg-slate-900 transition">p</button>
+                        <button onclick="showToast('ลิงก์แกลเลอรีผลงาน (Instagram)');" aria-label="Instagram" class="w-7 h-7 rounded-full bg-slate-700 text-white flex items-center justify-center text-xs font-bold hover:bg-slate-900 transition">ig</button>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- สคริปต์ควบคุมการทำงานแบบโต้ตอบ (Interactive Wireframe Logic) -->
+    <script>
+        // ข้อมูลเนื้อหาจำลองสำหรับแต่ละหัวข้อในแผนที่บทเรียน
+        const lessonData = [
+            {
+                title: "1. คอมพิวเตอร์คืออะไร? มารู้จักเพื่อนใหม่กัน!",
+                videoCaption: "คลิกเพื่อเล่นวิดีโอ: ทำความรู้จักพี่คอมพิวเตอร์",
+                diagram: "[แผนภาพ: ส่วนประกอบคอมพิวเตอร์]",
+                body: `
+                    <p><strong>คอมพิวเตอร์</strong> คือเครื่องมืออัจฉริยะที่ช่วยมนุษย์ทำงานต่างๆ เช่น คิดเลข วาดภาพ ฟังนิทาน และค้นคว้าหาความรู้</p>
+                    <ul class="list-disc list-inside space-y-1.5 text-slate-700 bg-slateWire-bg p-3.5 rounded-lg border border-slate-200">
+                        <li><strong>รับข้อมูลเข้า:</strong> ผ่านการพิมพ์หรือคลิก</li>
+                        <li><strong>ประมวลผล:</strong> สมองกลของคอมพิวเตอร์คิดคำนวณ</li>
+                        <li><strong>แสดงผลลัพธ์:</strong> โชว์ภาพหรือเสียงออกมาให้เราเห็น</li>
+                    </ul>
+                `
+            },
+            {
+                title: "คอมพิวเตอร์คืออะไร? มาเล่นเกมส์กัน!",
+                videoCaption: "คลิกเพื่อเล่นวิดีโอ: วิธีใช้เมาส์และคีย์บอร์ดอย่างถูกวิธี",
+                diagram: "[รูปภาพ/แผนภาพ]",
+                body: `
+                    <p><strong>คอมพิวเตอร์</strong> คืออุปกรณ์อิเล็กทรอนิกส์แสนฉลาดที่ช่วยเราทำงานต่างๆ ได้รวดเร็ว เช่น พิมพ์รายงาน วาดรูป ฟังเพลง และค้นหาความรู้สนุกๆ</p>
+                    <ul class="list-disc list-inside space-y-1.5 text-slate-700 bg-slateWire-bg p-3.5 rounded-lg border border-slate-200">
+                        <li><strong>หน้าจอ (Monitor):</strong> ใช้แสดงภาพและข้อความให้เรามองเห็น</li>
+                        <li><strong>เมาส์ (Mouse):</strong> ใช้ชี้และคลิกเลือกสิ่งต่างๆ บนหน้าจอ</li>
+                        <li><strong>คีย์บอร์ด (Keyboard):</strong> ใช้พิมพ์ตัวอักษรและตัวเลข</li>
+                    </ul>
+                `
+            },
+            {
+                title: "3. เกมฝึกสมอง: ทดสอบความจำแสนสนุก",
+                videoCaption: "คลิกเพื่อเล่นวิดีโอ: กติกาเกมจับคู่อุปกรณ์คอมพิวเตอร์",
+                diagram: "[ภาพตัวอย่าง: เกมจับคู่ไอคอน]",
+                body: `
+                    <p>เก่งมาก! น้องๆ ได้เรียนรู้เรื่องคอมพิวเตอร์ เมาส์ และคีย์บอร์ดครบแล้ว ลองมาทำ <strong>แบบทดสอบสนุกๆ</strong> ด้านล่างเพื่อสะสมดาวกันเถอะ!</p>
+                    <div class="bg-slateWire-bg p-3.5 rounded-lg border border-slate-200 text-slate-700">
+                        <strong>ภารกิจพิชิตดาว ⭐:</strong> ตอบคำถามด้านล่างให้ถูกต้องทั้ง 2 ข้อ เพื่อรับดาวสะสมประจำบทเรียนที่ 1
+                    </div>
+                `
+            }
+        ];
+
+        let currentLessonIndex = 1; // เริ่มต้นที่ข้อ 2 ตามภาพ Wireframe
+        let isPlaying = false;
+        let videoTimer = null;
+        let videoProgress = 0;
+        let isLoggedIn = false;
+
+        // ฟังก์ชันแสดงข้อความแจ้งเตือนมุมขวาล่าง
+        function showToast(message, icon = 'ℹ️') {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-message').textContent = message;
+            document.getElementById('toast-icon').textContent = icon;
+            
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 2600);
+        }
+
+        // ฟังก์ชันเลื่อนลงไปยังเนื้อหาบทเรียน
+        function scrollToLesson() {
+            document.getElementById('lesson-area').scrollIntoView({ behavior: 'smooth' });
+            showToast('เริ่มต้นบทเรียนที่ 1');
+        }
+
+        // ฟังก์ชันค้นหาจำลอง
+        function handleSearch(e) {
+            e.preventDefault();
+            const query = document.getElementById('search-input').value.trim();
+            if (query) {
+                showToast(`กำลังค้นหาคำว่า: "${query}"`, '🔍');
+            } else {
+                showToast('กรุณาพิมพ์คำที่ต้องการค้นหา', '⚠️');
+            }
+        }
+
+        // ฟังก์ชันสลับสถานะเข้าสู่ระบบจำลอง
+        function toggleLoginModal() {
+            isLoggedIn = !isLoggedIn;
+            const btn = document.getElementById('login-btn');
+            if (isLoggedIn) {
+                btn.textContent = '[น้องต้นกล้า ป.2]';
+                showToast('เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับน้องต้นกล้า', '👋');
+            } else {
+                btn.textContent = '[เข้าสู่ระบบ]';
+                showToast('ออกจากระบบเรียบร้อยแล้ว');
+            }
+        }
+
+        // ฟังก์ชันจำลองการเล่น/หยุดวิดีโอ
+        function toggleVideoPlay() {
+            isPlaying = !isPlaying;
+            const iconPlay = document.getElementById('icon-play');
+            const iconPause = document.getElementById('icon-pause');
+            const statusText = document.getElementById('video-status-text');
+            const progressBar = document.getElementById('video-progress-bar');
+
+            if (isPlaying) {
+                iconPlay.classList.add('hidden');
+                iconPause.classList.remove('hidden');
+                statusText.textContent = 'สถานะ: กำลังเล่นวิดีโอ...';
+                videoTimer = setInterval(() => {
+                    videoProgress = (videoProgress + 10) % 110;
+                    progressBar.style.width = `${videoProgress}%`;
+                }, 800);
+            } else {
+                iconPlay.classList.remove('hidden');
+                iconPause.classList.add('hidden');
+                statusText.textContent = 'สถานะ: หยุดชั่วคราว';
+                clearInterval(videoTimer);
+            }
+        }
+
+        // ฟังก์ชันเลือกหัวข้อในแผนที่บทเรียน (Sidebar)
+        function selectLesson(index) {
+            currentLessonIndex = index;
+            const data = lessonData[index];
+
+            // อัปเดตเนื้อหาด้านซ้าย
+            document.getElementById('content-title').textContent = data.title;
+            document.getElementById('video-caption').textContent = data.videoCaption;
+            document.getElementById('diagram-label').textContent = data.diagram;
+            document.getElementById('content-body').innerHTML = data.body;
+
+            // รีเซ็ตวิดีโอ
+            if (isPlaying) toggleVideoPlay();
+            videoProgress = 0;
+            document.getElementById('video-progress-bar').style.width = '0%';
+            document.getElementById('video-status-text').textContent = 'สถานะ: พร้อมเล่น';
+
+            // อัปเดตสถานะใน Sidebar
+            const items = document.querySelectorAll('.lesson-item');
+            items.forEach((item, idx) => {
+                const mark = item.querySelector('.status-mark');
+                item.className = 'lesson-item w-full text-left px-3 py-2.5 rounded-lg border transition flex items-center gap-2.5';
+                
+                if (idx < index) {
+                    mark.textContent = '[✓]';
+                    mark.className = 'status-mark font-mono font-bold text-slateWire-dark';
+                    item.classList.add('border-transparent', 'hover:bg-white/70', 'text-slate-700');
+                } else if (idx === index) {
+                    mark.textContent = '[●]';
+                    mark.className = 'status-mark font-mono font-bold text-slateWire-main';
+                    item.classList.add('border-slate-400', 'bg-white', 'font-semibold', 'shadow-xs', 'text-slate-900');
+                } else {
+                    mark.textContent = '[ ]';
+                    mark.className = 'status-mark font-mono font-bold text-slate-400';
+                    item.classList.add('border-transparent', 'hover:bg-white/70', 'text-slate-600');
+                }
+            });
+
+            // อัปเดตแถบความคืบหน้าและตัวบอกหน้าด้านล่าง
+            const percent = Math.round(((index + 1) / lessonData.length) * 100);
+            document.getElementById('progress-percent').textContent = `${percent}%`;
+            document.getElementById('lesson-progress-bar').style.width = `${percent}%`;
+            document.getElementById('bottom-step-indicator').textContent = `หัวข้อที่ ${index + 1} จาก ${lessonData.length}`;
+        }
+
+        // ฟังก์ชันปุ่มย้อนกลับ / ไปต่อเลย
+        function navigateLesson(direction) {
+            const nextIndex = currentLessonIndex + direction;
+            if (nextIndex >= 0 && nextIndex < lessonData.length) {
+                selectLesson(nextIndex);
+                document.getElementById('lesson-area').scrollIntoView({ behavior: 'smooth' });
+            } else if (nextIndex >= lessonData.length) {
+                showToast('ยอดเยี่ยม! น้องๆ เรียนจบครบทุกหัวข้อในบทนี้แล้ว 🎉', '⭐');
+            } else {
+                showToast('นี่คือหัวข้อแรกของบทเรียนแล้วครับ');
+            }
+        }
+
+        // ฟังก์ชันตรวจคำตอบแบบทดสอบสนุกๆ
+        function checkAnswer(questionNum, isCorrect, clickedBtn) {
+            const allBtns = document.querySelectorAll(`.quiz-btn-${questionNum}`);
+            const feedback = document.getElementById(`quiz-feedback-${questionNum}`);
+            
+            // ล้างสไตล์ปุ่มเก่า
+            allBtns.forEach(btn => {
+                btn.classList.remove('bg-slateWire-main', 'text-white', 'border-slateWire-dark', 'bg-slate-200', 'line-through');
+                btn.classList.add('bg-white', 'text-slate-800');
+            });
+
+            feedback.classList.remove('hidden', 'text-slateWire-dark', 'text-slate-600');
+
+            if (isCorrect) {
+                clickedBtn.classList.remove('bg-white', 'text-slate-800');
+                clickedBtn.classList.add('bg-slateWire-main', 'text-white', 'border-slateWire-dark', 'font-semibold');
+                feedback.textContent = '✓ ถูกต้อง เก่งมากเลย! รับไป 1 ดาว ⭐';
+                feedback.classList.add('text-slateWire-dark');
+                showToast('ตอบถูก! เก่งมากๆ เลยครับ ⭐', '🎉');
+            } else {
+                clickedBtn.classList.remove('bg-white');
+                clickedBtn.classList.add('bg-slate-200', 'line-through');
+                feedback.textContent = '✗ ยังไม่ถูกนะ ลองเลือกใหม่อีกครั้งจ้ะ';
+                feedback.classList.add('text-slate-600');
+            }
+        }
+
+        // ฟังก์ชันเพิ่มข้อความในมุมถาม-ตอบ
+        function addComment(e) {
+            e.preventDefault();
+            const input = document.getElementById('qa-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const qaList = document.getElementById('qa-list');
+            const newMsg = document.createElement('div');
+            newMsg.className = 'bg-white p-2.5 rounded-lg border border-slateWire-main text-slate-800';
+            
+            const sender = document.createElement('span');
+            sender.className = 'font-semibold text-slateWire-dark';
+            sender.textContent = isLoggedIn ? 'น้องต้นกล้า ป.2: ' : 'นักเรียน: ';
+            
+            newMsg.appendChild(sender);
+            newMsg.appendChild(document.createTextNode(text));
+            
+            qaList.appendChild(newMsg);
+            qaList.scrollTop = qaList.scrollHeight;
+            input.value = '';
+            showToast('ส่งข้อความถึงคุณครูเรียบร้อยแล้ว!', '✉️');
+        }
+    </script>
+</body>
+</html>
